@@ -1,0 +1,33 @@
+{
+  "name": "opencode-command-code-goat-provider",
+  "version": "0.1.0",
+  "description": "Command Code Provider API integration for OpenCode 2",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "index.ts",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@opencode/plugin": "2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "license": "MIT"
+}
