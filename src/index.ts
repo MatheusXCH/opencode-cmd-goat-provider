@@ -9,6 +9,8 @@ import {
   isAnthropicModel,
   type CommandCodeModel,
 } from "./catalog.js"
+import { enhanceCommandCodeErrorResponse } from "./errors.js"
+import { consoleLogSink, createOperationalState, type LogSink } from "./observability.js"
 
 const PROVIDER_ID = "command-code"
 const OPENAI_PACKAGE = "@opencode/ai/providers/openai-compatible"
@@ -19,6 +21,7 @@ interface Options {
   refreshMs?: number
   timeoutMs?: number
   outputTokens?: number
+  log?: LogSink
 }
 
 function numberOption(value: unknown, fallback: number, minimum: number): number {
@@ -33,6 +36,8 @@ export default Plugin.define({
     const refreshMs = numberOption(options.refreshMs, DEFAULT_REFRESH_MS, 10_000)
     const timeoutMs = numberOption(options.timeoutMs, DEFAULT_TIMEOUT_MS, 1_000)
     const outputTokens = numberOption(options.outputTokens, DEFAULT_OUTPUT_TOKENS, 1)
+    const log = typeof options.log === "function" ? options.log : consoleLogSink
+    const operational = createOperationalState()
     let models: CommandCodeModel[] = []
     let fingerprint = catalogFingerprint(models)
 
@@ -52,6 +57,7 @@ export default Plugin.define({
 
     const refresh = async () => {
       const next = await fetchModels({ baseURL, timeoutMs })
+      log(operational.success(next.length))
       const nextFingerprint = catalogFingerprint(next)
       if (nextFingerprint === fingerprint) return
       models = next
@@ -62,8 +68,9 @@ export default Plugin.define({
     try {
       models = await fetchModels({ baseURL, timeoutMs })
       fingerprint = catalogFingerprint(models)
-    } catch (error) {
-      console.error("[command-code] Initial model discovery failed; retrying in the background", error)
+      log(operational.success(models.length))
+    } catch {
+      log(operational.failure("initial"))
     }
 
     await ctx.catalog.transform((catalog) => {
@@ -92,9 +99,30 @@ export default Plugin.define({
       }
     })
 
+    await ctx.session.hook("http.response", async (event) => {
+      const enhanced = await enhanceCommandCodeErrorResponse(event.response)
+      event.response = enhanced.response
+      if (enhanced.diagnostic) {
+        log({
+          event: "provider_request_failed",
+          status: event.response.status,
+          kind: enhanced.diagnostic.kind,
+          retryable: enhanced.diagnostic.retryable,
+        })
+      }
+    }, { providerID: PROVIDER_ID })
+
+    await ctx.session.hook("retry", (event) => {
+      // OpenCode 2.0.3 already retries transient 429/5xx failures, honors Retry-After,
+      // applies bounded exponential backoff, and rejects deterministic 4xx failures.
+      // This guard prevents a provider-specific deterministic failure from being retried
+      // if an upstream classifier ever proposes otherwise.
+      if ([400, 401, 403, 422].includes(event.error.status ?? 0)) event.decision = { retry: false }
+    }, { providerID: PROVIDER_ID })
+
     const timer = setInterval(() => {
-      void refresh().catch((error) => {
-        console.error("[command-code] Model refresh failed; keeping the last successful catalog", error)
+      void refresh().catch(() => {
+        log(operational.failure("background"))
       })
     }, refreshMs)
     timer.unref?.()
@@ -104,3 +132,5 @@ export default Plugin.define({
 })
 
 export { fetchModels, isAnthropicModel, parseModelsResponse } from "./catalog.js"
+export { classifyCommandCodeError, enhanceCommandCodeErrorResponse } from "./errors.js"
+export { createOperationalState } from "./observability.js"

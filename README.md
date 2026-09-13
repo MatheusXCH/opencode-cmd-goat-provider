@@ -12,6 +12,9 @@ The plugin:
 - routes Claude models through Anthropic Messages and all other models through
   OpenAI Chat Completions;
 - keeps the last successful catalog if a refresh fails.
+- translates documented Provider API failures into actionable diagnostics;
+- emits structured, secret-free operational events for catalog and request
+  failures.
 
 It does not read Command Code CLI files, scrape tokens, call private endpoints,
 or claim to report the global GOAT quota.
@@ -79,6 +82,37 @@ npm run check
 
 The package is pinned to `@opencode/plugin` 2.0.3 so type checking catches
 incompatible plugin API changes.
+
+## Errors, retries, and operational logs
+
+The plugin classifies the documented Command Code errors for unsupported
+models, invalid requests, authentication, permission, plan upgrades, unavailable
+ZDR routes, rate limits, and server failures. In particular,
+`MODEL_NOT_IN_PLAN` explains that the catalog is global and does not claim that
+the selected model belongs to GOAT. Unknown provider failures keep their
+provider message and remain classified as unknown.
+
+OpenCode 2.0.3 owns request retries. Its native policy retries rate limits,
+provider `5xx` responses, and pre-delivery transport failures with bounded
+exponential backoff; it honors `Retry-After` (capped by OpenCode) and stops after
+four retries. The plugin does not replace that policy. It adds a conservative
+guard so HTTP `400`, `401`, `403`, and `422` fail immediately.
+
+Operational messages are JSON records prefixed with `[command-code]`. They only
+contain event names, status/category, model count, timestamps, and whether a
+failure is retryable. Request/response bodies, URLs, authentication headers,
+and credentials are never logged. Relevant events are:
+
+- `catalog_refresh_succeeded` with the model count and successful refresh time;
+- `catalog_refresh_failed`, distinguishing initial and background discovery and
+  reporting how many last-known models were retained;
+- `provider_request_failed` with HTTP status and sanitized error category.
+
+OpenCode 2.0.3 has no dedicated provider-health panel exposed to plugins, so
+these structured logs are the native diagnostic surface for now. A missing
+credential is shown by OpenCode's connection flow; HTTP authentication failures,
+catalog availability, and out-of-plan models are reported separately. These
+events are operational health signals, never GOAT quota statistics.
 
 ## Current limitations
 

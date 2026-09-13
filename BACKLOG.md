@@ -13,7 +13,7 @@ como catálogo oficial do GOAT.
 
 | Etapa | Épico | Objetivo | Prioridade | Dependências | Estado |
 | --- | --- | --- | --- | --- | --- |
-| 2 | Erros e observabilidade | Transformar falhas da Provider API em diagnósticos claros e verificáveis | Alta | MVP autenticado | Pendente |
+| 2 | Erros e observabilidade | Transformar falhas da Provider API em diagnósticos claros e verificáveis | Alta | MVP autenticado | Concluída |
 | 3 | Streaming e ferramentas | Validar os fluxos essenciais de uma sessão de programação real | Alta | Etapa 2 | Pendente |
 | 4 | Catálogo e metadados | Aumentar a fidelidade dos modelos sem criar uma lista estática frágil | Alta | Etapas 2–3 | Pendente |
 | 5 | Distribuição e segurança | Tornar instalação, atualização e operação reproduzíveis e seguras | Média | Etapas 2–4 | Pendente |
@@ -27,6 +27,8 @@ Objetivo: distinguir erros de configuração, plano, quota, rate limit e falhas
 temporárias sem expor credenciais ou depender de endpoints privados.
 
 #### B2.1 — Classificação de erros oficiais
+
+Estado: concluído.
 
 - Mapear `unsupported_model`, `invalid_request_error`,
   `authentication_error`, `permission_error`, `upgrade_required`,
@@ -46,6 +48,9 @@ Critérios de aceite:
 
 #### B2.2 — Política de retry
 
+Estado: concluído. A política nativa do OpenCode 2.0.3 foi confirmada e mantida;
+o plugin apenas impede retry dos status determinísticos listados abaixo.
+
 - Confirmar a política padrão do OpenCode para `429` e `5xx`.
 - Implementar override somente se a política nativa não respeitar o contrato do
   Command Code.
@@ -58,6 +63,9 @@ Critérios de aceite:
 - Uma falha temporária não gera loop infinito nem tempestade de requisições.
 
 #### B2.3 — Estado operacional
+
+Estado: concluído. O OpenCode 2.0.3 não expõe um painel nativo de saúde para
+providers via plugin; os diagnósticos são publicados em logs JSON estruturados.
 
 - Registrar sucesso/falha da descoberta, quantidade de modelos e horário da
   última atualização bem-sucedida.
