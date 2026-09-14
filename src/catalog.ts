@@ -10,6 +10,8 @@ export interface CommandCodeModel {
   contextLength: number
 }
 
+export type ToolCapabilityPolicy = "all" | readonly string[]
+
 interface ModelsResponse {
   object: "list"
   data: unknown[]
@@ -47,6 +49,10 @@ export function parseModelsResponse(value: unknown): CommandCodeModel[] {
 
 export function isAnthropicModel(model: Pick<CommandCodeModel, "id">): boolean {
   return model.id.toLowerCase().startsWith("claude-") || model.id.toLowerCase().startsWith("anthropic/")
+}
+
+export function modelSupportsTools(modelID: string, policy: ToolCapabilityPolicy | undefined): boolean {
+  return policy === "all" || (Array.isArray(policy) && policy.includes(modelID))
 }
 
 export async function fetchModels(input: {

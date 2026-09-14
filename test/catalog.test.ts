@@ -1,6 +1,12 @@
 import assert from "node:assert/strict"
 import test from "node:test"
-import { catalogFingerprint, fetchModels, isAnthropicModel, parseModelsResponse } from "../src/catalog.js"
+import {
+  catalogFingerprint,
+  fetchModels,
+  isAnthropicModel,
+  modelSupportsTools,
+  parseModelsResponse,
+} from "../src/catalog.js"
 
 test("parses the documented live models response", () => {
   assert.deepEqual(
@@ -20,6 +26,14 @@ test("selects the Anthropic protocol only for Anthropic model IDs", () => {
   assert.equal(isAnthropicModel({ id: "claude-sonnet-5" }), true)
   assert.equal(isAnthropicModel({ id: "anthropic/claude-sonnet" }), true)
   assert.equal(isAnthropicModel({ id: "deepseek/deepseek-v4" }), false)
+})
+
+test("advertises tools only through an explicit capability policy", () => {
+  assert.equal(modelSupportsTools("model-a", undefined), false)
+  assert.equal(modelSupportsTools("model-a", []), false)
+  assert.equal(modelSupportsTools("model-a", ["model-a"]), true)
+  assert.equal(modelSupportsTools("model-b", ["model-a"]), false)
+  assert.equal(modelSupportsTools("unverified-model", "all"), true)
 })
 
 test("fetches models from the configured base URL", async () => {

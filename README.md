@@ -63,7 +63,8 @@ Options are optional and intended mainly for testing or self-hosted proxies:
         "baseURL": "https://api.commandcode.ai/provider/v1",
         "refreshMs": 300000,
         "timeoutMs": 15000,
-        "outputTokens": 32000
+        "outputTokens": 32000,
+        "toolModels": ["exact/model-id-confirmed-with-tools"]
       }
     }
   ]
@@ -74,6 +75,12 @@ Options are optional and intended mainly for testing or self-hosted proxies:
 context size but not a separate maximum-output value, so `outputTokens` is a
 conservative local fallback capped by the reported context size.
 
+The public catalog does not publish tool support. For safety, models therefore
+default to `capabilities.tools = false`. Add exact, verified model IDs to
+`toolModels` to enable agent tools for them. `"toolModels": "all"` is available
+as an explicit opt-in for accounts whose entire accessible catalog has been
+verified; it is not recommended for an unknown or changing inventory.
+
 ## Development
 
 ```sh
@@ -82,6 +89,20 @@ npm run check
 
 The package is pinned to `@opencode/plugin` 2.0.3 so type checking catches
 incompatible plugin API changes.
+
+Protocol tests use a local SSE server and never consume credits. They exercise
+incremental text, final usage and finish reasons, fragmented tool calls,
+malformed arguments, cancellation, and both OpenAI-compatible and Anthropic
+Messages routing. Real Provider API checks are separate and opt-in:
+
+```sh
+CMD_LIVE=1 CMD_API_KEY=... CMD_LIVE_MODEL=... npm run test:live
+```
+
+That check performs a harmless model → `lookup` tool → model round trip. To
+also test Claude Messages, set `CMD_LIVE_ANTHROPIC_MODEL`; it is skipped with an
+explanation otherwise because Claude needs an eligible plan or extra credits.
+`CMD_BASE_URL` may override the official endpoint for a compatible proxy.
 
 ## Errors, retries, and operational logs
 
@@ -129,6 +150,10 @@ events are operational health signals, never GOAT quota statistics.
   quota.
 - Protocol selection is derived from the model identifier because the live
   model response does not expose an explicit protocol field.
+- Invalid streamed JSON tool arguments are surfaced by OpenCode 2.0.3 as an
+  empty input object. Tool schemas must therefore keep required fields and
+  validation strict; the integration tests verify that only one call is
+  reconstructed for OpenCode's tool validation/execution layer.
 
 ## Official references
 

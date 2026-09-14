@@ -7,7 +7,9 @@ import {
   DEFAULT_TIMEOUT_MS,
   fetchModels,
   isAnthropicModel,
+  modelSupportsTools,
   type CommandCodeModel,
+  type ToolCapabilityPolicy,
 } from "./catalog.js"
 import { enhanceCommandCodeErrorResponse } from "./errors.js"
 import { consoleLogSink, createOperationalState, type LogSink } from "./observability.js"
@@ -22,6 +24,7 @@ interface Options {
   timeoutMs?: number
   outputTokens?: number
   log?: LogSink
+  toolModels?: ToolCapabilityPolicy
 }
 
 function numberOption(value: unknown, fallback: number, minimum: number): number {
@@ -87,7 +90,11 @@ export default Plugin.define({
           model.name = item.name
           model.package = isAnthropicModel(item) ? ANTHROPIC_PACKAGE : OPENAI_PACKAGE
           model.settings = { ...model.settings, baseURL, provider: PROVIDER_ID }
-          model.capabilities = { tools: true, input: ["text"], output: ["text"] }
+          model.capabilities = {
+            tools: modelSupportsTools(item.id, options.toolModels),
+            input: ["text"],
+            output: ["text"],
+          }
           model.limit = {
             context: item.contextLength,
             output: Math.min(outputTokens, item.contextLength),
@@ -131,6 +138,7 @@ export default Plugin.define({
   },
 })
 
-export { fetchModels, isAnthropicModel, parseModelsResponse } from "./catalog.js"
+export { fetchModels, isAnthropicModel, modelSupportsTools, parseModelsResponse } from "./catalog.js"
+export type { ToolCapabilityPolicy } from "./catalog.js"
 export { classifyCommandCodeError, enhanceCommandCodeErrorResponse } from "./errors.js"
 export { createOperationalState } from "./observability.js"

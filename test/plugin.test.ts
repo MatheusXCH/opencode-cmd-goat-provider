@@ -36,7 +36,11 @@ test("registers credentials, dynamically discovered models, and protocol routing
   }
 
   const ctx = {
-    options: { refreshMs: 10_000, log: (event: unknown) => logs.push(event) },
+    options: {
+      refreshMs: 10_000,
+      toolModels: ["deepseek/test"],
+      log: (event: unknown) => logs.push(event),
+    },
     integration: {
       transform: async (callback: (value: any) => void) => callback({
         update(_id: string, update: (value: { name: string }) => void) {
@@ -64,6 +68,8 @@ test("registers credentials, dynamically discovered models, and protocol routing
     assert.equal(providers.get("command-code")?.package, "@opencode/ai/providers/openai-compatible")
     assert.equal(models.get("claude-sonnet-test")?.package, "@opencode/ai/providers/anthropic-compatible")
     assert.equal(models.get("deepseek/test")?.package, "@opencode/ai/providers/openai-compatible")
+    assert.equal((models.get("claude-sonnet-test")?.capabilities as Record<string, unknown>).tools, false)
+    assert.equal((models.get("deepseek/test")?.capabilities as Record<string, unknown>).tools, true)
     assert.deepEqual(logs[0], {
       event: "catalog_refresh_succeeded",
       modelCount: 2,

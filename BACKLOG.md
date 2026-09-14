@@ -19,7 +19,7 @@ como catálogo oficial do GOAT.
 | Etapa | Épico | Objetivo | Prioridade | Dependências | Estado |
 | --- | --- | --- | --- | --- | --- |
 | 2 | Erros e observabilidade | Transformar falhas da Provider API em diagnósticos claros e verificáveis | Alta | MVP autenticado | Concluída |
-| 3 | Streaming e ferramentas | Validar os fluxos essenciais de uma sessão de programação real | Alta | Etapa 2 | Pendente |
+| 3 | Streaming e ferramentas | Validar os fluxos essenciais de uma sessão de programação real | Alta | Etapa 2 | Concluída |
 | 4 | Catálogo e metadados | Aumentar a fidelidade dos modelos sem criar uma lista estática frágil | Alta | Etapas 2–3 | Pendente |
 | 5 | Distribuição e segurança | Tornar instalação, atualização e operação reproduzíveis e seguras | Média | Etapas 2–4 | Pendente |
 | 6 | Preparação para publicação | Estabelecer os critérios objetivos para tornar o repositório público | Média | Etapa 5 | Pendente |
@@ -101,6 +101,11 @@ OpenCode, além de uma resposta textual simples.
 
 #### B3.1 — Streaming OpenAI-compatible
 
+Estado: concluído. O adaptador nativo do OpenCode 2.0.3 foi validado contra um
+servidor SSE local: deltas de texto, `finish_reason`, usage/cache, interrupção e
+fechamento antecipado da conexão chegam corretamente sem parser próprio no
+plugin. O teste real permanece opt-in por consumir créditos.
+
 - **Escopo:** essencial.
 - **Natureza principal:** majoritariamente teste de comportamento integrado.
 - **Avaliação:** o streaming é implementado principalmente pelo runtime
@@ -122,6 +127,12 @@ Critérios de aceite:
   sessão quando suportados pelo OpenCode.
 
 #### B3.2 — Tool calling
+
+Estado: concluído. Chamadas fragmentadas únicas e múltiplas, reconstrução de
+argumentos, respostas inválidas e continuação estão cobertas na fronteira do
+runtime. O teste live opt-in executa um ciclo inofensivo completo. Como o
+catálogo oficial não declara suporte a tools, o plugin agora usa uma política
+conservadora `toolModels`, sem anunciar a capacidade para todo modelo.
 
 - **Escopo:** essencial.
 - **Natureza principal:** majoritariamente teste de comportamento integrado,
@@ -145,6 +156,11 @@ Critérios de aceite:
   duas vezes.
 
 #### B3.3 — Protocolo Anthropic
+
+Estado: concluído. O roteamento unitário/integrado comprova `/messages`, SSE,
+tool use, usage e autenticação por `x-api-key` ou Bearer, sem permitir que um
+Claude alcance `/chat/completions`. O teste real é opt-in e explica o skip
+quando modelo, chave ou acesso elegível não foram fornecidos.
 
 - **Escopo:** essencial para o suporte geral ao Command Code.
 - **Natureza principal:** investigação e implementação real no plugin,
