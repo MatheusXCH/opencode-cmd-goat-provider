@@ -1,0 +1,26 @@
+{
+  "name": "opencode-cmd-goat-provider",
+  "version": "1.0.0",
+  "description": "Minimal Command Code GOAT provider for OpenCode V2",
+  "type": "module",
+  "exports": "./index.ts",
+  "files": [
+    "index.ts",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@opencode/plugin": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/json-schema": "^7.0.15",
+    "typescript": "^5.9.2"
+  },
+  "license": "MIT"
+}
