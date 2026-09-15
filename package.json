@@ -1,11 +1,18 @@
 {
   "name": "opencode-cmd-goat-provider",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Minimal Command Code GOAT provider for OpenCode V2",
   "type": "module",
-  "exports": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./rpc": "./rpc.ts",
+    "./tui": "./tui.ts"
+  },
   "files": [
     "index.ts",
+    "rpc.ts",
+    "tui.ts",
+    "usage.ts",
     "LICENSE",
     "README.md"
   ],
@@ -21,6 +28,12 @@
   "devDependencies": {
     "@types/json-schema": "^7.0.15",
     "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "@opencode/theme": "2.0.3",
+    "@opentui/core": "0.5.10",
+    "@opentui/solid": "0.5.10",
+    "solid-js": "1.9.12"
   },
   "license": "MIT"
 }

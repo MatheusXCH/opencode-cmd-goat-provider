@@ -5,15 +5,13 @@ OpenCode credentials, and the OpenAI-compatible Command Code provider.
 
 ## Priority order
 
-1. Visual usage view — item 7.
-2. Reasoning effort — item 8.
-3. Model outside the GOAT plan — item 5.
-4. Graceful catalog discovery failure — item 2.
-5. Focused tests — item 1.
+1. Model outside the GOAT plan — item 5.
+2. Graceful catalog discovery failure — item 2.
+3. Focused tests — item 1.
 
 ## 1. Visual usage view — item 7
 
-Status: approved for implementation; upstream API is alpha.
+Status: implemented in v0.0.2; upstream API is alpha.
 
 The installed Command Code CLI uses these authenticated endpoints for
 `/usage`, and all three returned HTTP 200 with the existing Provider API key:
@@ -32,15 +30,15 @@ These `/alpha` routes are used by the official CLI but are not documented as
 part of the public Command Code Provider API. They may therefore change without
 notice.
 
-Proposed experience:
+Implemented experience:
 
-- Add a TUI slash command such as `/goat-usage`.
+- Add the TUI slash command `/goat-usage`.
 - Show three integrated meters: 5 hours, week, and month.
 - Include exact reset timestamps/countdowns where returned by the API.
 - Clearly distinguish subscription credits from purchased/free credits.
 - Show an explicit unavailable state instead of estimating values locally.
 
-Proposed architecture:
+Implemented architecture:
 
 - The server plugin resolves the active `command-code` credential through the
   OpenCode credential store and calls the three endpoints.
@@ -49,7 +47,7 @@ Proposed architecture:
 - Never expose the API key to the TUI, logs, plugin storage, or error messages.
 - Fetch only when the user opens the usage view; do not poll in the background.
 
-Release conditions:
+Ongoing safeguards:
 
 - Treat the integration as best-effort and label the upstream API as alpha.
 - Isolate response parsing so an upstream schema change produces an
@@ -58,7 +56,7 @@ Release conditions:
 
 ## 2. Reasoning effort — item 8
 
-Status: approved for implementation.
+Status: implemented in v0.0.2.
 
 Observed Provider API contract:
 
@@ -69,12 +67,12 @@ Observed Provider API contract:
 - `/provider/v1/models` does not currently publish the supported effort levels
   per model.
 
-Implementation direction:
+Implementation:
 
 - Expose OpenCode model variants that send `reasoning_effort` in the request
   body.
-- Determine a conservative policy for models that support only a subset of the
-  five levels.
+- Expose all five API-supported levels because model discovery does not publish
+  per-model restrictions; a provider-side rejection remains visible to users.
 - Keep discovery dynamic; do not replace it with a static model catalog.
 - Add non-paid tests for variant registration and request-body mapping.
 - Use optional, explicit live tests only for representative GOAT model
