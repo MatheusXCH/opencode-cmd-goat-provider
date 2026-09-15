@@ -12,7 +12,7 @@ require a different API protocol.
 Install the current release:
 
 ```sh
-opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.2'
+opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.3'
 ```
 
 Restart OpenCode, run `/connect`, select **Command Code GOAT**, and paste the API
@@ -37,7 +37,7 @@ Install the tag shown on the new GitHub release:
 
 ```sh
 opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#OLD_TAG'
-opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.2'
+opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.3'
 ```
 
 ## Uninstall
@@ -45,8 +45,14 @@ opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.2'
 Use the same release tag used during installation:
 
 ```sh
-opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.2'
+opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.3'
 ```
+
+## Compatibility
+
+The plugin targets OpenCode V2 (`@opencode/plugin >=2.0.3 <3`). Its optional
+TUI peer ranges allow the host OpenCode installation to provide matching
+OpenTUI, theme, and Solid versions, avoiding duplicate UI runtimes.
 
 ## Development
 
