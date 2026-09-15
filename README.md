@@ -9,10 +9,11 @@ require a different API protocol.
 
 ## Install
 
-Install the current release:
+Install the recommended moving tag, which always points to the newest tested
+release:
 
 ```sh
-opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.4'
+opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#LATEST'
 ```
 
 Restart OpenCode, run `/connect`, select **Command Code GOAT**, and paste the API
@@ -40,19 +41,21 @@ OpenCode still starts and the plugin retries automatically on the next startup.
 
 ## Update
 
-Install the tag shown on the new GitHub release:
+Update the installed `LATEST` tag through OpenCode:
 
 ```sh
-opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#OLD_TAG'
-opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.4'
+opencode plugin update 'github:MatheusXCH/opencode-cmd-goat-provider#LATEST'
 ```
+
+Versioned tags such as `v0.0.4` remain available when a pinned installation or
+rollback is preferred.
 
 ## Uninstall
 
-Use the same release tag used during installation:
+Remove the same target used during installation:
 
 ```sh
-opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.4'
+opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#LATEST'
 ```
 
 ## Compatibility
