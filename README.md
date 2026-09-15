@@ -12,7 +12,7 @@ require a different API protocol.
 Install the current release:
 
 ```sh
-opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.3'
+opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.4'
 ```
 
 Restart OpenCode, run `/connect`, select **Command Code GOAT**, and paste the API
@@ -31,13 +31,20 @@ Every discovered model offers `low`, `medium`, `high`, `xhigh`, and `max`
 variants. Select the desired variant in OpenCode to send its corresponding
 `reasoning_effort` value to Command Code.
 
+If the global catalog contains a model that is not included in the connected
+GOAT subscription, the plugin turns `MODEL_NOT_IN_PLAN` into an actionable
+message without maintaining a static allowlist.
+
+Model discovery is best-effort. If the catalog is temporarily unavailable,
+OpenCode still starts and the plugin retries automatically on the next startup.
+
 ## Update
 
 Install the tag shown on the new GitHub release:
 
 ```sh
 opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#OLD_TAG'
-opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.3'
+opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.4'
 ```
 
 ## Uninstall
@@ -45,7 +52,7 @@ opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.3'
 Use the same release tag used during installation:
 
 ```sh
-opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.3'
+opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#v0.0.4'
 ```
 
 ## Compatibility
@@ -59,4 +66,5 @@ OpenTUI, theme, and Solid versions, avoiding duplicate UI runtimes.
 ```sh
 npm install
 npm run check
+npm test
 ```

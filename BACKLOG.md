@@ -5,9 +5,7 @@ OpenCode credentials, and the OpenAI-compatible Command Code provider.
 
 ## Priority order
 
-1. Model outside the GOAT plan — item 5.
-2. Graceful catalog discovery failure — item 2.
-3. Focused tests — item 1.
+All approved items are implemented as of v0.0.4.
 
 ## 1. Visual usage view — item 7
 
@@ -80,7 +78,7 @@ Implementation:
 
 ## 3. Model outside the GOAT plan — item 5
 
-Status: approved.
+Status: implemented in v0.0.4.
 
 - Recognize the official `MODEL_NOT_IN_PLAN` Provider API error.
 - Explain that the model exists in the global Command Code catalog but is not
@@ -89,7 +87,7 @@ Status: approved.
 
 ## 4. Graceful catalog discovery failure — item 2
 
-Status: approved.
+Status: implemented in v0.0.4.
 
 - Do not prevent OpenCode from starting when model discovery fails.
 - Emit one concise, actionable error.
@@ -99,7 +97,7 @@ Status: approved.
 
 ## 5. Focused tests — item 1
 
-Status: approved.
+Status: implemented in v0.0.4.
 
 - Test parsing of the live `/provider/v1/models` response shape.
 - Test exclusion of `claude-*` and `anthropic/*` model IDs.

@@ -1,6 +1,6 @@
 {
   "name": "opencode-cmd-goat-provider",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Minimal Command Code GOAT provider for OpenCode V2",
   "type": "module",
   "exports": {
@@ -13,11 +13,14 @@
     "rpc.ts",
     "tui.ts",
     "usage.ts",
+    "models.ts",
+    "provider-error.ts",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "test": "tsx --test *.test.ts"
   },
   "engines": {
     "node": ">=22"
@@ -27,6 +30,7 @@
   },
   "devDependencies": {
     "@types/json-schema": "^7.0.15",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   },
   "peerDependencies": {

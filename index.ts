@@ -1,45 +1,30 @@
 import { Plugin } from "@opencode/plugin"
 import { GoatUsage } from "./rpc.js"
 import { fetchUsage } from "./usage.js"
+import { discoverModels, discoveryError, BASE_URL } from "./models.js"
+import { explainModelNotInPlan } from "./provider-error.js"
 
 const PROVIDER_ID = "command-code"
-const BASE_URL = "https://api.commandcode.ai/provider/v1"
 const PACKAGE = "@opencode/ai/providers/openai-compatible"
 const EFFORTS = ["low", "medium", "high", "xhigh", "max"] as const
-
-type ApiModel = {
-  id: string
-  name?: string
-  context_length?: number
-}
-
-async function discoverModels(): Promise<ApiModel[]> {
-  const response = await fetch(`${BASE_URL}/models`, {
-    headers: { accept: "application/json" },
-    signal: AbortSignal.timeout(15_000),
-  })
-
-  if (!response.ok) {
-    throw new Error(`Command Code model discovery failed (HTTP ${response.status})`)
-  }
-
-  const body = (await response.json()) as { data?: unknown }
-  if (!Array.isArray(body.data)) throw new Error("Command Code returned an invalid model catalog")
-
-  return body.data.filter(
-    (model): model is ApiModel =>
-      typeof model === "object" &&
-      model !== null &&
-      typeof (model as ApiModel).id === "string" &&
-      !(model as ApiModel).id.toLowerCase().startsWith("claude-") &&
-      !(model as ApiModel).id.toLowerCase().startsWith("anthropic/"),
-  )
-}
 
 export default Plugin.define({
   id: "command-code.goat",
   async setup(ctx) {
-    const models = await discoverModels()
+    let models = [] as Awaited<ReturnType<typeof discoverModels>>
+    try {
+      models = await discoverModels()
+    } catch (error) {
+      console.error(discoveryError(error))
+    }
+
+    await ctx.session.hook(
+      "http.response",
+      async (event) => {
+        event.response = await explainModelNotInPlan(event.response)
+      },
+      { providerID: PROVIDER_ID },
+    )
 
     await ctx.integration.transform((editor) => {
       editor.update(PROVIDER_ID, (integration) => {
