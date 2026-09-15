@@ -13,7 +13,7 @@ Install the recommended moving tag, which always points to the newest tested
 release:
 
 ```sh
-opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#LATEST'
+opencode plugin add 'github:MatheusXCH/opencode-cmd-goat-provider#latest'
 ```
 
 Restart OpenCode, run `/connect`, select **Command Code GOAT**, and paste the API
@@ -41,10 +41,10 @@ OpenCode still starts and the plugin retries automatically on the next startup.
 
 ## Update
 
-Update the installed `LATEST` tag through OpenCode:
+Update the installed `latest` tag through OpenCode:
 
 ```sh
-opencode plugin update 'github:MatheusXCH/opencode-cmd-goat-provider#LATEST'
+opencode plugin update 'github:MatheusXCH/opencode-cmd-goat-provider#latest'
 ```
 
 Versioned tags such as `v0.0.4` remain available when a pinned installation or
@@ -55,7 +55,7 @@ rollback is preferred.
 Remove the same target used during installation:
 
 ```sh
-opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#LATEST'
+opencode plugin remove 'github:MatheusXCH/opencode-cmd-goat-provider#latest'
 ```
 
 ## Compatibility
