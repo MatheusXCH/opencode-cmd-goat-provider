@@ -7,7 +7,7 @@ OpenCode credentials, and the OpenAI-compatible Command Code provider.
 
 ### Generic Command Code plan support — v0.1.0
 
-Status: approved and planned as one release item.
+Status: implemented in v0.1.0.
 
 Scope: support GOAT, Pro, Max 10x, and Max 20x through the shared Command Code
 Provider API. The Go plan and Claude models remain explicitly unsupported.

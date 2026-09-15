@@ -36,5 +36,5 @@ export async function discoverModels(fetcher: FetchLike = fetch): Promise<ApiMod
 
 export function discoveryError(error: unknown): string {
   const detail = error instanceof Error && /^HTTP \d{3}$/.test(error.message) ? ` (${error.message})` : ""
-  return `[command-code.goat] Model catalog unavailable${detail}. Restart OpenCode to retry.`
+  return `[command-code.provider] Model catalog unavailable${detail}. Restart OpenCode to retry.`
 }

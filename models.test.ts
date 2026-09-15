@@ -43,10 +43,10 @@ test("reports a concise retry-on-startup discovery error", async () => {
   )
   assert.equal(
     discoveryError(new Error("HTTP 503")),
-    "[command-code.goat] Model catalog unavailable (HTTP 503). Restart OpenCode to retry.",
+    "[command-code.provider] Model catalog unavailable (HTTP 503). Restart OpenCode to retry.",
   )
   assert.equal(
     discoveryError(new Error("secret transport detail")),
-    "[command-code.goat] Model catalog unavailable. Restart OpenCode to retry.",
+    "[command-code.provider] Model catalog unavailable. Restart OpenCode to retry.",
   )
 })

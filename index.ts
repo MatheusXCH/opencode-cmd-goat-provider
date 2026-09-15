@@ -1,5 +1,5 @@
 import { Plugin } from "@opencode/plugin"
-import { GoatUsage } from "./rpc.js"
+import { CommandCodeUsage } from "./rpc.js"
 import { fetchUsage } from "./usage.js"
 import { discoverModels, discoveryError, BASE_URL } from "./models.js"
 import { explainModelNotInPlan } from "./provider-error.js"
@@ -9,7 +9,7 @@ const PACKAGE = "@opencode/ai/providers/openai-compatible"
 const EFFORTS = ["low", "medium", "high", "xhigh", "max"] as const
 
 export default Plugin.define({
-  id: "command-code.goat",
+  id: "command-code.provider",
   async setup(ctx) {
     let models = [] as Awaited<ReturnType<typeof discoverModels>>
     try {
@@ -28,7 +28,7 @@ export default Plugin.define({
 
     await ctx.integration.transform((editor) => {
       editor.update(PROVIDER_ID, (integration) => {
-        integration.name = "Command Code GOAT"
+        integration.name = "Command Code"
       })
       editor.method.update({
         integrationID: PROVIDER_ID,
@@ -42,7 +42,7 @@ export default Plugin.define({
 
     await ctx.catalog.transform((catalog) => {
       catalog.provider.update(PROVIDER_ID, (provider) => {
-        provider.name = "Command Code GOAT"
+        provider.name = "Command Code"
         provider.activation = "auto"
         provider.integrationID = PROVIDER_ID as unknown as NonNullable<typeof provider.integrationID>
         provider.package = PACKAGE
@@ -69,7 +69,7 @@ export default Plugin.define({
       }
     })
 
-    await ctx.rpc.register(GoatUsage, {
+    await ctx.rpc.register(CommandCodeUsage, {
       get: async (_input, context) => {
         try {
           const connection = await ctx.integration.connection.active(PROVIDER_ID)

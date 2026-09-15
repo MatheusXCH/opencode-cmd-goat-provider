@@ -1,22 +1,22 @@
 import { Plugin } from "@opencode/plugin/tui"
-import { GoatUsage } from "./rpc.js"
+import { CMD_USAGE_COMMAND, CommandCodeUsage } from "./rpc.js"
 
 export default Plugin.define({
-  id: "command-code.goat.tui",
+  id: "command-code.provider.tui",
   setup(context) {
-    const usage = context.client.rpc(GoatUsage)
+    const usage = context.client.rpc(CommandCodeUsage)
     context.ui.slot({
       append: "app",
       render() {
         context.keymap.layer(() => ({
           mode: "global",
           commands: [{
-            id: "command-code.goat.usage",
-            title: "Command Code GOAT usage",
+            id: "command-code.provider.usage",
+            title: "Command Code usage",
             description: "Show 5-hour, weekly, and monthly usage",
             group: "Command Code",
             palette: true,
-            slash: { name: "goat-usage" },
+            slash: { name: CMD_USAGE_COMMAND },
             async run() {
               try {
                 const result = await usage.get({})

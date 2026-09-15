@@ -1,6 +1,6 @@
 const CODE = "MODEL_NOT_IN_PLAN"
 export const MODEL_NOT_IN_PLAN_MESSAGE =
-  "This model exists in the Command Code catalog but is not available to the connected GOAT plan. Choose another model or review your subscription."
+  "This model exists in the Command Code catalog but is not available to the connected Command Code plan. Choose another model or review your subscription."
 
 function hasCode(value: unknown): boolean {
   if (typeof value === "string") return value === CODE
