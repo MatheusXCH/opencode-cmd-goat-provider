@@ -1,6 +1,6 @@
 {
   "name": "opencode-cmd-goat-provider",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Minimal Command Code GOAT provider for OpenCode V2",
   "type": "module",
   "exports": "./index.ts",
