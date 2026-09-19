@@ -40,8 +40,8 @@ export default Plugin.define({
       })
     })
 
-    await ctx.catalog.transform((catalog) => {
-      catalog.provider.update(PROVIDER_ID, (provider) => {
+    await ctx.provider.transform((editor) => {
+      editor.update(PROVIDER_ID, (provider) => {
         provider.name = "Command Code"
         provider.activation = "auto"
         provider.integrationID = PROVIDER_ID as unknown as NonNullable<typeof provider.integrationID>
@@ -50,7 +50,7 @@ export default Plugin.define({
       })
 
       for (const item of models) {
-        catalog.model.update(PROVIDER_ID, item.id, (model) => {
+        editor.models.update(PROVIDER_ID, item.id, (model) => {
           model.name = item.name || item.id
           model.package = PACKAGE
           model.settings = { ...model.settings, baseURL: BASE_URL, provider: PROVIDER_ID }

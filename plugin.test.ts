@@ -22,10 +22,10 @@ test("registers the provider, connect methods, models, variants, and error hook"
         method: { update: (value: unknown) => methods.push(value) },
       }),
     },
-    catalog: {
-      transform: async (callback: (catalog: any) => void) => callback({
-        provider: { update: (_id: string, update: (value: any) => void) => update(provider) },
-        model: { update: (_provider: string, id: string, update: (value: any) => void) => {
+    provider: {
+      transform: async (callback: (editor: any) => void) => callback({
+        update: (_id: string, update: (value: any) => void) => update(provider),
+        models: { update: (_provider: string, id: string, update: (value: any) => void) => {
           const model = { settings: {}, variants: [] }
           update(model)
           models.set(id, model)
@@ -68,21 +68,21 @@ test("catalog failure does not prevent plugin setup", async (t) => {
   globalThis.fetch = async () => new Response("down", { status: 503 })
   console.error = (message?: unknown) => { errors.push(String(message)) }
 
-  let catalogRan = false
+  let providerTransformRan = false
   const ctx = {
     integration: { transform: async (callback: (editor: any) => void) => callback({
       update: (_id: string, update: (value: any) => void) => update({}),
       method: { update: () => {} },
     }) },
-    catalog: { transform: async (callback: (catalog: any) => void) => {
-      catalogRan = true
-      callback({ provider: { update: (_id: string, update: (value: any) => void) => update({ settings: {} }) }, model: { update: () => {} } })
+    provider: { transform: async (callback: (editor: any) => void) => {
+      providerTransformRan = true
+      callback({ update: (_id: string, update: (value: any) => void) => update({ settings: {} }), models: { update: () => {} } })
     } },
     session: { hook: async () => {} },
     rpc: { register: async () => {} },
   }
 
   await plugin.setup(ctx as never)
-  assert.equal(catalogRan, true)
+  assert.equal(providerTransformRan, true)
   assert.deepEqual(errors, ["[command-code.provider] Model catalog unavailable (HTTP 503). Restart OpenCode to retry."])
 })

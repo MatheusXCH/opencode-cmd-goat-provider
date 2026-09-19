@@ -61,7 +61,7 @@ opencode plugin remove 'github:MatheusXCH/opencode-command-code-provider#latest'
 
 ## Compatibility
 
-The plugin targets OpenCode V2 (`@opencode/plugin >=2.0.3 <3`). Its optional
+The plugin targets OpenCode V2 (`@opencode/plugin >=2.0.4 <3`). Its optional
 TUI peer ranges allow the host OpenCode installation to provide matching
 OpenTUI, theme, and Solid versions, avoiding duplicate UI runtimes.
 
